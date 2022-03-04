@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         }
     }
     // Write the image to a file
-    FILE *file = fopen("imgs/image.ppm", "wb");
+    FILE *file = fopen("imgs/first_image.ppm", "wb");
     if (file == NULL)
     {
         printf("Error opening file!\n");
