@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
             }
         }
     }
+    fclose(file);
 
     // Free the memory
     for (int i = 0; i < image.header.width; i++)
@@ -87,5 +88,6 @@ int main(int argc, char *argv[])
     }
     free(image.data);
 
+    system("convert imgs/first_image.ppm imgs/first_image.jpg");
     return 0;
 }
