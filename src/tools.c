@@ -94,7 +94,7 @@ Image create_mandlebrot_image(const int width, const int height, const float pix
     return image;
 }
 
-int write_image(Image *image, const char *filename)
+int write_image(Image *image, const char *filename, const char *new_filename)
 {
     // Open the file
     FILE *file = fopen(filename, "wb");
@@ -128,20 +128,10 @@ int write_image(Image *image, const char *filename)
     // Close the file 
     fclose(file);
 
-    // Convert the new file name
-    char *new_name = malloc(sizeof(char) * strlen(filename));
-    strncat(new_name, filename, strlen(filename) - 4);
-    new_name[5] = 'J';
-    new_name[6] = 'P';
-    new_name[7] = 'G';
-    strncat(new_name, ".jpg", strlen(".jpg"));
-
-    // Create the command
-    char *command = malloc(sizeof(char) * (strlen(filename) + strlen(new_name) + strlen("convert") + 2));
-    strncat(command, "convert ", strlen("convert "));
+    char command[150] = "convert "; 
     strncat(command, filename, strlen(filename));
     strncat(command, " ", strlen(" "));
-    strncat(command, new_name, strlen(new_name));
+    strncat(command, new_filename, strlen(new_filename));
 
     // Execute the command
     system(command);
@@ -156,8 +146,6 @@ int write_image(Image *image, const char *filename)
         free(image->data[i]);
     }
     free(image->data);
-    free(command);
-    free(new_name);
 
     return 0;
 }

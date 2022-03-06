@@ -36,6 +36,6 @@ extern Image create_mandlebrot_image(const int width, const int height, const fl
  * @param filename The name of the file
  * @returns 0 if the file was written successfully, 1 otherwise
  */
-extern int write_image(Image *image, const char *filename);
+extern int write_image(Image *image, const char *filename, const char *new_filename);
 
 #endif
