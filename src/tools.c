@@ -131,6 +131,9 @@ int write_image(Image *image, const char *filename)
     // Convert the new file name
     char *new_name = malloc(sizeof(char) * strlen(filename));
     strncat(new_name, filename, strlen(filename) - 4);
+    new_name[5] = 'J';
+    new_name[6] = 'P';
+    new_name[7] = 'G';
     strncat(new_name, ".jpg", strlen(".jpg"));
 
     // Create the command

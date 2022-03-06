@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     // Create a Mandlebrot image
     Image mandlebrot_image = create_mandlebrot_image(900, 600, -2, 1, 1, -1);
 
-    int success = write_image(&mandlebrot_image, "imgs/mandlebrot_image.ppm");
+    int success = write_image(&mandlebrot_image, "imgs/PPM/mandlebrot_image.ppm");
 
     if (success == 0)
         printf("Image written successfully!\n");
