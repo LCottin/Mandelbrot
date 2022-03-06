@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "Image.h"
+#include "tools.h"
 
 int main(int argc, char *argv[])
 {
@@ -89,5 +90,15 @@ int main(int argc, char *argv[])
     free(image.data);
 
     system("convert imgs/first_image.ppm imgs/first_image.jpg");
+
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 2.0, converges(-1.0, 2.0));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 1.5, converges(-1.0, 1.5));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 1.0, converges(-1.0, 1.0));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 0.5, converges(-1.0, 0.5));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 0.4, converges(-1.0, 0.4));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 0.35, converges(-1.0, 0.35));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 0.3, converges(-1.0, 0.3));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 0.29, converges(-1.0, 0.29));
+    printf("(%2.3f;  %2.3f -> %d\n", -1.0, 0.28, converges(-1.0, 0.28));
     return 0;
 }
