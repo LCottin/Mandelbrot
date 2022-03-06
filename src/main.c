@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
         start_y2 += step_y2;
     }
    
-    system("ffmpeg -framerate 10 -i imgs/PPM/mandlebrot_video%2d.ppm imgs/video/video.avi");
+    system("ffmpeg -framerate 10 -i imgs/JPG/mandlebrot_video%2d.jpg imgs/video/video.avi");
+    system("rm imgs/PPM/*");
     return 0;
 }
