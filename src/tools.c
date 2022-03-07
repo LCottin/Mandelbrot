@@ -25,8 +25,8 @@ int converges(const float x, const float y)
     for (size_t i = 1; i < 85; i++)
     {
         // Computes the next iteration
-        float r_n1 = r_n * r_n - i_n * i_n + x;
-        float i_n1 = 2 * r_n * i_n + y;
+        const float r_n1 = r_n * r_n - i_n * i_n + x;
+        const float i_n1 = 2 * r_n * i_n + y;
         module = r_n1 * r_n1 + i_n1 * i_n1;
 
         // Saves values
@@ -44,33 +44,29 @@ int converges(const float x, const float y)
     return 0;
 }
 
-Image create_mandlebrot_image(const int width, const int height, const float pixel_top_left_x, const float pixel_top_left_y, const float pixel_bottom_right_x, const float pixel_bottom_right_y)
+Image create_mandlebrot_image(const int width, const int height, const float pixel_top_left_x, const float pixel_top_left_y, const float scale_x)
 {
+    // Initialize the image
+    const float scale_y = - scale_x * height / width;
+    const float pixel_width = scale_x * 3.0;
+    const float pixel_height = scale_y * 3.0;
+
     // Create an image
     Image image;
     image.header.ASCII = "P6";
-    image.header.separator = '\n';
+    image.header.separator = ' ';
     image.header.width = width;
-    image.header.separator2 = '\n';
+    image.header.separator2 = ' ';
     image.header.height = height;
-    image.header.separator3 = '\n';
+    image.header.separator3 = ' ';
     image.header.max_color = 255;
-    image.header.separator4 = '\n';
+    image.header.separator4 = ' ';
 
     // Allocate memory for the image
-    image.data = (unsigned char ***)malloc(image.header.width * sizeof(unsigned char ***));
-
-    // Allocate memory for each row
-    for (int i = 0; i < image.header.width; i++)
+    image.data = (Pixel **)malloc(image.header.width * sizeof(Pixel **));
+    for (size_t i = 0; i < image.header.width; i++)
     {
-        image.data[i] = (unsigned char **)malloc(image.header.height * sizeof(unsigned char**));
-    }
-    for (int i = 0; i < image.header.width; i++)
-    {
-        for (int j = 0; j < image.header.height; j++)
-        {
-            image.data[i][j] = (unsigned char *)malloc(3 * sizeof(unsigned char));
-        }
+        image.data[i] = (Pixel *)malloc(image.header.height * sizeof(Pixel *));        
     }
 
     // Iterate over the image
@@ -79,15 +75,11 @@ Image create_mandlebrot_image(const int width, const int height, const float pix
         for (int j = 0; j < image.header.height; j++)
         {
             // Compute the x and y coordinates of the pixel
-            float x = pixel_top_left_x + (pixel_bottom_right_x - pixel_top_left_x) * i / (image.header.width - 1);
-            float y = pixel_top_left_y + (pixel_bottom_right_y - pixel_top_left_y) * j / (image.header.height - 1);
+            float x = pixel_top_left_x + pixel_width * i / (image.header.width - 1);
+            float y = pixel_top_left_y + pixel_height * j / (image.header.height - 1);
 
             // Compute the value of the pixel
-            int value = converges(x, y);
-            image.data[i][j][0] = (unsigned char)(3 * value);
-            image.data[i][j][1] = (unsigned char)(3 * value);
-            image.data[i][j][2] = (unsigned char)(3 * value);
-
+            image.data[i][j] = create_pixel(7 * converges(x, y));
         }
     }
 
@@ -119,16 +111,16 @@ int write_image(Image *image, const char *filename, const char *new_filename)
     {
         for (int j = 0; j < image->header.height; j++)
         {
-            fputc(image->data[i][j][0], file);
-            fputc(image->data[i][j][1], file);
-            fputc(image->data[i][j][2], file);
+            fputc(image->data[i][j].r, file);
+            fputc(image->data[i][j].g, file);
+            fputc(image->data[i][j].b, file);
         }
     }
 
     // Close the file 
     fclose(file);
 
-    char command[150] = "convert "; 
+    char command[200] = "convert "; 
     strncat(command, filename, strlen(filename));
     strncat(command, " ", strlen(" "));
     strncat(command, new_filename, strlen(new_filename));
@@ -139,13 +131,67 @@ int write_image(Image *image, const char *filename, const char *new_filename)
     // Frees the memory
     for (int i = 0; i < image->header.width; i++)
     {
-        for (int j = 0; j < image->header.height; j++)
-        {
-            free(image->data[i][j]);
-        }
         free(image->data[i]);
     }
     free(image->data);
 
     return 0;
+}
+
+Pixel create_pixel(const int value)
+{
+    Pixel pixel;
+
+    // Sets values
+    if (value < 256)
+    {
+        pixel.r = value;
+        pixel.g = 0;
+        pixel.b = 0;
+    }
+    else if (value < 510)
+    {
+        pixel.r = 255;
+        pixel.g = value - 255;
+        pixel.b = 0;
+    }
+    else if (value < 765)
+    {
+        pixel.r = 765 - value;
+        pixel.g = 255;
+        pixel.b = 0;
+    }
+    else if (value < 1020)
+    {
+        pixel.r = 0;
+        pixel.g = 255;
+        pixel.b = 1020 - value;
+    }
+    else if (value < 1275)
+    {
+        pixel.r = 0;
+        pixel.g = 1275 - value;
+        pixel.b = 255;
+    }
+    else if (value < 1530)
+    {
+        pixel.r = 1530 - value;
+        pixel.g = 0;
+        pixel.b = 255;
+    }
+    else if (value < 1785)
+    {
+        pixel.r = 255;
+        pixel.g = 0;
+        pixel.b = 1785 - value;
+    }
+    else
+    {
+        printf("Error: value %d is out of range\n", value);
+        pixel.r = 255;
+        pixel.g = 255;
+        pixel.b = 255;
+    }
+
+    return pixel;
 }

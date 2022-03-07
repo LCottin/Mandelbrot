@@ -12,6 +12,7 @@
 
 int main(int argc, char *argv[])
 {
+    /*
     // Creates a serie of files
     float start_x1 = -2;
     float start_y1 = 1;
@@ -50,5 +51,11 @@ int main(int argc, char *argv[])
    
     system("ffmpeg -framerate 10 -i imgs/JPG/mandlebrot_video%2d.jpg imgs/video/video.avi");
     system("rm imgs/PPM/*");
+    */
+
+    // Create a Mandlebrot image
+    Image mandlebrot_image = create_mandlebrot_image(900, 600, -0.743662, 0.131810, 0.000014);
+    write_image(&mandlebrot_image, "imgs/PPM/mandlebrot3.ppm", "imgs/JPG/mandlebrot3.jpg");
+
     return 0;
 }

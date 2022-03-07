@@ -6,8 +6,21 @@
 #define __IMAGE__
 
 /**
+ * @brief Pixel structure
+ * @param r Red value
+ * @param g Green value
+ * @param b Blue value
+ */
+typedef struct Pixel
+{
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+} Pixel;
+
+/**
  * @brief Image header struct.
- * @param width Image width.
+ * @ width Image width.
  * @param height Image height.
  */
 typedef struct Header
@@ -30,7 +43,7 @@ typedef struct Header
 typedef struct Image
 {
     Header header;
-    unsigned char ***data;
+    Pixel **data;
 } Image;
 
 #endif

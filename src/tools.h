@@ -24,11 +24,10 @@ extern int converges(const float x, const float y);
  * @param height The height of the image
  * @param pixel_top_left_x The top left pixel of the image
  * @param pixel_top_left_y The top left pixel of the image
- * @param pixel_bottom_right_x The bottom right pixel of the image
- * @param pixel_bottom_right_y The bottom right pixel of the image
+ * @param scale_x The scale of the image in the x axis
  * @returns image The image
  */
-extern Image create_mandlebrot_image(const int width, const int height, const float pixel_top_left_x, const float pixel_top_left_y, const float pixel_bottom_right_x, const float pixel_bottom_right_y);
+extern Image create_mandlebrot_image(const int width, const int height, const float pixel_top_left_x, const float pixel_top_left_y, const float scale_x);
 
 /**
  * @brief This function writes an image to a file and frees the memory
@@ -37,5 +36,12 @@ extern Image create_mandlebrot_image(const int width, const int height, const fl
  * @returns 0 if the file was written successfully, 1 otherwise
  */
 extern int write_image(Image *image, const char *filename, const char *new_filename);
+
+/**
+ * @brief This function creates a new pixel based on a convergence value
+ * @param value The convergence value
+ * @returns pixel The new pixel
+ */
+extern Pixel create_pixel(const int value);
 
 #endif
