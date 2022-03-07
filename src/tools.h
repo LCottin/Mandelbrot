@@ -38,4 +38,11 @@ extern Image create_mandlebrot_image(const int width, const int height, const fl
  */
 extern int write_image(Image *image, const char *filename, const char *new_filename);
 
+/**
+ * @brief This function creates a new pixel based on a convergence value
+ * @param value The convergence value
+ * @returns pixel The new pixel
+ */
+extern Pixel create_pixel(const int value);
+
 #endif
