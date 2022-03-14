@@ -6,6 +6,30 @@
 #define __IMAGE__
 
 /**
+ * @brief Extra parameters of the image 
+ * @param xMin The minimum x value of the image
+ * @param xMax The maximum x value of the image
+ * @param yMin The minimum y value of the image
+ * @param yMax The maximum y value of the image
+ * @param scale The scale of the image
+ * @param pixWidth The width of a pixel
+ * @param pixHeight The height of a pixel
+ * @param convergence The array of convergence values
+ */
+typedef struct Parameters
+{
+    float xMin;
+    float xMax;
+    float yMin;
+    float yMax;
+    float scale;
+    float pixWidth;
+    float pixHeight;
+    int  *convergence;
+    unsigned convergenceSize;
+} Parameters;
+
+/**
  * @brief Pixel structure
  * @param r Red value
  * @param g Green value
@@ -43,6 +67,7 @@ typedef struct Header
 typedef struct Image
 {
     Header header;
+    Parameters parameters;
     Pixel **data;
 } Image;
 
