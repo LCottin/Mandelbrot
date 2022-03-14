@@ -54,8 +54,8 @@ int main(int argc, char *argv[])
     */
 
     // Create a Mandlebrot image
-    Image mandlebrot_image = create_mandlebrot_image(900, 600, -0.743662, 0.131810, 0.000014);
-    write_image(&mandlebrot_image, "imgs/PPM/mandlebrot3.ppm", "imgs/JPG/mandlebrot3.jpg");
+    Image mandlebrot_image = create_mandlebrot_image(900, 600, -2, 1, 1);
+    write_image(&mandlebrot_image, "imgs/PPM/mandlebrot_param.ppm", "imgs/JPG/mandlebrot_param.jpg");
 
     return 0;
 }
