@@ -22,12 +22,12 @@ extern int converges(const float x, const float y);
  * @brief This function creates a Mandlebrot image
  * @param width The width of the image
  * @param height The height of the image
- * @param pixel_top_left_x The top left pixel of the image
- * @param pixel_top_left_y The top left pixel of the image
- * @param scale_x The scale of the image in the x axis
+ * @param xMin The minimum x value of the image
+ * @param yMin The minimum y value of the image
+ * @param scale The scale of the image
  * @returns image The image
  */
-extern Image create_mandlebrot_image(const int width, const int height, const float pixel_top_left_x, const float pixel_top_left_y, const float scale_x);
+extern Image create_mandlebrot_image(const int width, const int height, const float xMin, const float yMin, const float scale);
 
 /**
  * @brief This function writes an image to a file and frees the memory
@@ -43,5 +43,14 @@ extern int write_image(Image *image, const char *filename, const char *new_filen
  * @returns pixel The new pixel
  */
 extern Pixel create_pixel(const int value);
+
+/**
+ * @brief This function initializes the image parameters
+ * @param image The image to initialize
+ * @param xMin The minimum x value
+ * @param yMin The minimum y value
+ * @param scale The scale of the image
+ */
+extern void init_parameters(Image *image, const float xMin, const float yMin, const float scale);
 
 #endif

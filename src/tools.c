@@ -12,7 +12,7 @@ int converges(const float x, const float y)
      * I(n+1) = 2R(n)I(n) + y;
      */
 
-    // Initialize the variables
+    // Initializes the variables
     float r_n = x;
     float i_n = y;
     float module = r_n * r_n + i_n * i_n;
@@ -21,7 +21,7 @@ int converges(const float x, const float y)
         return 0;
     }
 
-    // Iterate until the module^2 is greater than 4 or the number of iterations is greater than 85
+    // Iterates until the module^2 is greater than 4 or the number of iterations is greater than 85
     for (size_t i = 1; i < 85; i++)
     {
         // Computes the next iteration
@@ -44,15 +44,12 @@ int converges(const float x, const float y)
     return 0;
 }
 
-Image create_mandlebrot_image(const int width, const int height, const float pixel_top_left_x, const float pixel_top_left_y, const float scale_x)
+Image create_mandlebrot_image(const int width, const int height, const float xMin, const float yMin, const float scale)
 {
-    // Initialize the image
-    const float scale_y = - scale_x * height / width;
-    const float pixel_width = scale_x * 3.0;
-    const float pixel_height = scale_y * 3.0;
-
-    // Create an image
+    // Creates an image
     Image image;
+
+    // Initializes the image header
     image.header.ASCII = "P6";
     image.header.separator = ' ';
     image.header.width = width;
@@ -61,6 +58,9 @@ Image create_mandlebrot_image(const int width, const int height, const float pix
     image.header.separator3 = ' ';
     image.header.max_color = 255;
     image.header.separator4 = ' ';
+
+    // Initializes the image parameters
+    init_parameters(&image, xMin, yMin, scale);
 
     // Allocate memory for the image
     image.data = (Pixel **)malloc(image.header.width * sizeof(Pixel **));
@@ -75,11 +75,13 @@ Image create_mandlebrot_image(const int width, const int height, const float pix
         for (int j = 0; j < image.header.height; j++)
         {
             // Compute the x and y coordinates of the pixel
-            float x = pixel_top_left_x + pixel_width * i / (image.header.width - 1);
-            float y = pixel_top_left_y + pixel_height * j / (image.header.height - 1);
+            const float x = image.parameters.xMin + image.parameters.pixWidth * i / (image.header.width - 1);
+            const float y = image.parameters.yMin + image.parameters.pixHeight * j / (image.header.height - 1);
 
             // Compute the value of the pixel
-            image.data[i][j] = create_pixel(7 * converges(x, y));
+            const int value  = 7 * converges(x, y);
+            image.data[i][j] = create_pixel(value);
+            image.parameters.convergence[i * image.header.height + j] = value;
         }
     }
 
@@ -93,7 +95,7 @@ int write_image(Image *image, const char *filename, const char *new_filename)
     if (file == NULL)
     {
         printf("Error: could not open file %s\n", filename);
-        return 1;
+        return -1;
     }
 
     // Write the header
@@ -134,6 +136,7 @@ int write_image(Image *image, const char *filename, const char *new_filename)
         free(image->data[i]);
     }
     free(image->data);
+    free(image->parameters.convergence);
 
     return 0;
 }
@@ -149,7 +152,7 @@ Pixel create_pixel(const int value)
         pixel.g = 0;
         pixel.b = 0;
     }
-    else if (value < 510)
+    else if (value < 511)
     {
         pixel.r = 255;
         pixel.g = value - 255;
@@ -194,4 +197,23 @@ Pixel create_pixel(const int value)
     }
 
     return pixel;
+}
+
+void init_parameters(Image *image, const float xMin, const float yMin, const float scale)
+{
+    // Initializes the parameters
+    image->parameters.xMin  = xMin;
+    image->parameters.yMin  = yMin;
+    image->parameters.scale = scale;
+
+    // Computes some values
+    image->parameters.xMax      = image->parameters.xMin + scale * 3.0;
+    image->parameters.yMax      = image->parameters.yMin + scale * 3.0 * image->header.height / image->header.width;
+    image->parameters.pixWidth  = scale * 3.0;
+    image->parameters.pixHeight = -scale * 3.0 * image->header.height / image->header.width;
+
+    // Initializes the convergence array
+    image->parameters.convergenceSize   = image->header.width / image->parameters.pixWidth * image->parameters.pixHeight / image->parameters.pixWidth;
+    image->parameters.convergence       = (int *)malloc(image->parameters.convergenceSize * sizeof(int));
+    memset(image->parameters.convergence, 0, image->parameters.convergenceSize * sizeof(int));
 }
